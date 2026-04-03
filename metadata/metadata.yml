@@ -1,0 +1,10 @@
+metadata_version: 1
+name: PK_BARseq_MAT-RDS_conversion_for_release
+description: Environment build and script to extract data from MATLAB files in RDS
+  format files for BARseq experiments
+tags:
+- BARseq
+- LC-NE
+authors:
+- name: Polina Kosillo
+- name: Xiaoyin Chen
