@@ -1,0 +1,8 @@
+{
+	"version": 1,
+	"base_image": "codeocean/c2-seurat:latest",
+	"post_install": true,
+	"options": {
+		"git_ask_pass": true
+	}
+}
