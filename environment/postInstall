@@ -7,4 +7,13 @@ rm -rf /opt/conda/envs/r4-base
 
 mamba env create -f /etc/mamba-envs/r4-base.yml
 
+# Ensure R always finds conda's shared libraries (openssl, curl, etc.)
+mkdir -p /opt/conda/envs/r4-base/etc/conda/activate.d
+echo 'export LD_LIBRARY_PATH=/opt/conda/envs/r4-base/lib:${LD_LIBRARY_PATH}' \
+  > /opt/conda/envs/r4-base/etc/conda/activate.d/env_vars.sh
+
+# Also set it globally for non-interactive R sessions (Code Ocean)
+echo 'export LD_LIBRARY_PATH=/opt/conda/envs/r4-base/lib:${LD_LIBRARY_PATH}' \
+  >> /etc/profile.d/r4-base-libs.sh
+
 Rscript -e '.libPaths("/opt/conda/envs/r4-base/lib/R/library/"); devtools::install_github("satijalab/seurat-data")'
