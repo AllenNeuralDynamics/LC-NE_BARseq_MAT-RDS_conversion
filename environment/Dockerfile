@@ -7,5 +7,6 @@ ARG GIT_ASKPASS
 ARG GIT_ACCESS_TOKEN
 COPY git-ask-pass /
 
+COPY r4-base.yml /
 COPY postInstall /
 RUN /postInstall
