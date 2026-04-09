@@ -1,5 +1,4 @@
 FROM registry.codeocean.allenneuraldynamics.org/codeocean/c2-seurat:latest
-
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_ASKPASS
 ARG GIT_ACCESS_TOKEN

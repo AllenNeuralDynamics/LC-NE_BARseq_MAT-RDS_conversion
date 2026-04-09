@@ -1,14 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-# Update the solver to avoid libsolv crash
 mamba update -n base -c conda-forge mamba libsolv -y || true
 
-# Remove old r4-base if it exists from the base image
-mamba remove -n r4-base --all -y || true
+mamba env create -f /etc/mamba-envs/r4-base.yml --force
 
-# Create the environment from our new unpinned YAML
-mamba env create -f /etc/mamba-envs/r4-base.yml
-
-# SeuratData is only available from GitHub
 Rscript -e '.libPaths("/opt/conda/envs/r4-base/lib/R/library/"); devtools::install_github("satijalab/seurat-data")'

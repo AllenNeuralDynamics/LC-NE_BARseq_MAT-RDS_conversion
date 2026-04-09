@@ -4,11 +4,9 @@ channels:
   - bioconda
 dependencies:
   - r-base=4.2.3
-  # Critical
   - r-hdf5r
   - r-matrix
   - bioconductor-singlecellexperiment
-  # Nice to have
   - bioconductor-summarizedexperiment
   - bioconductor-metaneighbor
   - r-locfit
