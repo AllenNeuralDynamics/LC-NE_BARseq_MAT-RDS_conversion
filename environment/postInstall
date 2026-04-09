@@ -3,6 +3,8 @@ set -e
 
 mamba update -n base -c conda-forge mamba libsolv -y || true
 
-mamba env create -f /etc/mamba-envs/r4-base.yml --force
+rm -rf /opt/conda/envs/r4-base
+
+mamba env create -f /etc/mamba-envs/r4-base.yml
 
 Rscript -e '.libPaths("/opt/conda/envs/r4-base/lib/R/library/"); devtools::install_github("satijalab/seurat-data")'
