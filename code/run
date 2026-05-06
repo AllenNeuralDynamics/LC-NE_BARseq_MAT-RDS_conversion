@@ -17,13 +17,10 @@ render_html() {
   "
 }
 
-# Step 1a: Convert Brain 1 .mat to .rds
-render_html 01_BarSeq_RDSconvert_brain1_v2.R
-
-# Step 1b: Convert Brain 3 .mat to .rds
+# Step 1a: Convert Brain 3 .mat to .rds
 render_html 01_BarSeq_RDSconvert_brain3_v2.R
 
-# Step 1c: Convert Brain 4 .mat to .rds
+# Step 1b: Convert Brain 4 .mat to .rds
 render_html 01_BarSeq_RDSconvert_brain4_v2.R
 
 echo "=== Reproducible Run complete. HTML reports and results saved to /results/ ==="
