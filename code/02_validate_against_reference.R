@@ -1,10 +1,10 @@
 ######## TEMPORARY: validate refactored output against the previously-published reference asset ########
-# This script is included only to confirm the refactor produces byte-identical RDS files
-# to the prior published output. It will be removed (along with the reference asset attachment)
+# This script is included only to confirm the refactor produces RDS files equivalent to
+# the prior published output. It will be removed (along with the reference asset attachment)
 # in a follow-up cleanup commit before the final release.
 
 .libPaths("/opt/conda/envs/r4-base/lib/R/library/")
-library(SingleCellExperiment)
+suppressPackageStartupMessages(library(SingleCellExperiment))
 
 REFERENCE_MOUNT <- "/data/BARseq_MATtoRDSfiles_brain3_brain4"
 
@@ -22,17 +22,17 @@ compare_rds <- function(new_path, ref_path) {
   }
 
   cat("  DIFFER -- drilling down:\n")
-  cat("    class:    new=", paste(class(new_obj), collapse = ","),
+  cat("    class:       new=", paste(class(new_obj), collapse = ","),
       "  ref=", paste(class(ref_obj), collapse = ","), "\n", sep = "")
-  cat("    dim:      ", identical(dim(new_obj), dim(ref_obj)),
+  cat("    dim:         ", identical(dim(new_obj), dim(ref_obj)),
       "  (new=", paste(dim(new_obj), collapse = "x"),
       "  ref=", paste(dim(ref_obj), collapse = "x"), ")\n", sep = "")
-  cat("    colnames: ", identical(colnames(new_obj), colnames(ref_obj)), "\n", sep = "")
-  cat("    rownames: ", identical(rownames(new_obj), rownames(ref_obj)), "\n", sep = "")
+  cat("    colnames:    ", identical(colnames(new_obj), colnames(ref_obj)), "\n", sep = "")
+  cat("    rownames:    ", identical(rownames(new_obj), rownames(ref_obj)), "\n", sep = "")
 
   cd_new <- as.data.frame(colData(new_obj))
   cd_ref <- as.data.frame(colData(ref_obj))
-  cat("    colData:  ", identical(cd_new, cd_ref), "\n", sep = "")
+  cat("    colData:     ", identical(cd_new, cd_ref), "\n", sep = "")
   if (!identical(cd_new, cd_ref)) {
     common_cols <- intersect(colnames(cd_new), colnames(cd_ref))
     for (col in common_cols) {
@@ -44,9 +44,30 @@ compare_rds <- function(new_path, ref_path) {
     if (length(ref_only) > 0) cat("      colData ref only: ", paste(ref_only, collapse = ","), "\n", sep = "")
   }
 
+  rd_new <- as.data.frame(rowData(new_obj))
+  rd_ref <- as.data.frame(rowData(ref_obj))
+  cat("    rowData:     ", identical(rd_new, rd_ref), "\n", sep = "")
+  if (!identical(rd_new, rd_ref)) {
+    cat("      rowData new ncol=", ncol(rd_new), " cols=(", paste(colnames(rd_new), collapse = ","), ")\n", sep = "")
+    cat("      rowData ref ncol=", ncol(rd_ref), " cols=(", paste(colnames(rd_ref), collapse = ","), ")\n", sep = "")
+  }
+
+  cat("    assayNames:  new=(", paste(assayNames(new_obj), collapse = ","),
+      ")  ref=(", paste(assayNames(ref_obj), collapse = ","),
+      ")  identical=", identical(assayNames(new_obj), assayNames(ref_obj)), "\n", sep = "")
+
+  meta_eq <- identical(metadata(new_obj), metadata(ref_obj))
+  cat("    metadata:    ", meta_eq, "\n", sep = "")
+  if (!meta_eq) {
+    cat("      metadata new:\n")
+    print(metadata(new_obj))
+    cat("      metadata ref:\n")
+    print(metadata(ref_obj))
+  }
+
   counts_new <- assay(new_obj, "counts")
   counts_ref <- assay(ref_obj, "counts")
-  cat("    counts:   ", identical(counts_new, counts_ref), "\n", sep = "")
+  cat("    counts:      ", identical(counts_new, counts_ref), "\n", sep = "")
   if (!identical(counts_new, counts_ref)) {
     cat("      counts class: new=", paste(class(counts_new), collapse = ","),
         "  ref=", paste(class(counts_ref), collapse = ","), "\n", sep = "")
@@ -55,6 +76,16 @@ compare_rds <- function(new_path, ref_path) {
       n_diff <- sum(as.matrix(counts_new) != as.matrix(counts_ref))
       cat("      n_differing_elements: ", n_diff, "\n", sep = "")
     }
+  }
+
+  # Final fallback: all.equal walks the full structure and reports textual diffs
+  ae <- tryCatch(all.equal(new_obj, ref_obj),
+                 error = function(e) paste("all.equal error:", conditionMessage(e)))
+  cat("    all.equal:\n")
+  if (isTRUE(ae)) {
+    cat("      TRUE (all.equal sees no semantic difference -- divergence is in object identity / attributes only)\n")
+  } else {
+    for (msg in ae) cat("      ", msg, "\n", sep = "")
   }
 
   cat("\n")
