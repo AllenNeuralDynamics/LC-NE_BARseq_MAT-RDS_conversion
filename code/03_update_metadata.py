@@ -103,7 +103,9 @@ def update_metadata_for_subject(
     code = Code(
         url=CAPSULE_URL,
         name="LC-NE_BARseq_MAT-RDS_conversion",
-        commit_hash=commit_hash,
+        # aind-data-schema 2.6.0's Code has no commit_hash field yet (added
+        # post-2.6.0 on master); using `version` for the git commit hash.
+        version=commit_hash,
         run_script=Path("code/run"),
         language="R",
     )
