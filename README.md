@@ -15,11 +15,12 @@ This capsule does not produce manuscript figures. Its outputs are saved as two p
 | File | Description |
 |------|-------------|
 | `00_env_library_loading.R` | Loads the `r4-base` conda environment and core libraries (`hdf5r`, `Matrix`, `SingleCellExperiment`). Provided as a reference for interactive use; not called directly by the `run` script. |
-| `01_BarSeq_RDSconvert_brain3_v2.R` | Converts specimen 780345 (brain 3). |
-| `01_BarSeq_RDSconvert_brain4_v2.R` | Converts specimen 780346 (brain 4). |
+| `00_conversion_lib.R` | Shared library holding the conversion logic. Defines `convert_v7_filtneurons()` (reads a v7.3 BARseq `.mat` into a `SingleCellExperiment`) and `convert_subject()` (end-to-end per-subject pipeline: read input, save initial SCE, clean, save cleaned SCE, Dbh-filter, save filtered SCE). Sourced by the per-subject scripts. |
+| `01_BarSeq_RDSconvert_brain3_v2.R` | Per-subject driver for specimen 780345 (brain 3). Sources `00_conversion_lib.R` and calls `convert_subject()`. |
+| `01_BarSeq_RDSconvert_brain4_v2.R` | Per-subject driver for specimen 780346 (brain 4). Sources `00_conversion_lib.R` and calls `convert_subject()`. |
 | `run` | Bash entry point for Reproducible Run. Renders each conversion script to an HTML report via `knitr::spin`. |
 
-Each conversion script performs the same steps:
+`convert_subject()` performs the following steps for each subject:
 
 1. Opens the BARseq MATLAB file (`.mat`, HDF5 v7.3 format) using `hdf5r::H5File` and reads the `filt_neurons` group.
 2. Reconstructs the sparse gene-by-cell count matrix from stored CSC components using `Matrix::sparseMatrix`.
