@@ -23,4 +23,8 @@ render_html 01_BarSeq_RDSconvert_brain3_v2.R
 # Step 1b: Convert Brain 4 .mat to .rds
 render_html 01_BarSeq_RDSconvert_brain4_v2.R
 
+# Step 2: TEMPORARY -- validate output against the previously-published reference asset.
+# Remove this step (and the reference asset attachment) before final release.
+render_html 02_validate_against_reference.R
+
 echo "=== Reproducible Run complete. HTML reports and results saved to /results/ ==="
