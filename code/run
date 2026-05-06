@@ -28,4 +28,7 @@ render_html 01_BarSeq_RDSconvert_brain4_v2.R
 # Plain text output (not HTML) since this is an ephemeral diagnostic.
 Rscript 02_validate_against_reference.R > /results/02_validate_against_reference.txt 2>&1 || true
 
+# Step 3: Generate AIND-compliant derived-asset metadata for each output folder.
+python3 03_update_metadata.py
+
 echo "=== Reproducible Run complete. HTML reports and results saved to /results/ ==="

@@ -30,3 +30,6 @@ dependencies:
   - r-data.table
   - r-irkernel
   - r-devtools
+  - pip
+  - pip:
+      - aind-data-schema==2.6.0

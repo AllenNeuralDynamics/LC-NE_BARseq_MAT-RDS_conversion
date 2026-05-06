@@ -18,7 +18,8 @@ This capsule does not produce manuscript figures. Its outputs are saved as two p
 | `00_conversion_lib.R` | Shared library holding the conversion logic. Defines `convert_v7_filtneurons()` (reads a v7.3 BARseq `.mat` into a `SingleCellExperiment`) and `convert_subject()` (end-to-end per-subject pipeline: read input, save initial SCE, clean, save cleaned SCE, Dbh-filter, save filtered SCE). Sourced by the per-subject scripts. |
 | `01_BarSeq_RDSconvert_brain3_v2.R` | Per-subject driver for specimen 780345 (brain 3). Sources `00_conversion_lib.R` and calls `convert_subject()`. |
 | `01_BarSeq_RDSconvert_brain4_v2.R` | Per-subject driver for specimen 780346 (brain 4). Sources `00_conversion_lib.R` and calls `convert_subject()`. |
-| `run` | Bash entry point for Reproducible Run. Renders each conversion script to an HTML report via `knitr::spin`. |
+| `03_update_metadata.py` | Generates AIND-compliant `data_description.json` and `processing.json` for each output folder, and copies peer metadata (`acquisition.json`, `procedures.json`, `subject.json`) from the input asset. Uses `aind-data-schema` Pydantic models for validation. |
+| `run` | Bash entry point for Reproducible Run. Renders each conversion script to an HTML report via `knitr::spin`, then runs the metadata-generation script. |
 
 `convert_subject()` performs the following steps for each subject:
 
