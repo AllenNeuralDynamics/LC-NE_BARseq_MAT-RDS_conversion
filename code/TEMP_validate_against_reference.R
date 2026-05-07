@@ -28,6 +28,39 @@ print_header <- function() {
   cat("not data we control. It can differ between two runs if the\n")
   cat("package versions resolved to different builds. Downstream\n")
   cat("consumers do not read it.\n\n")
+  cat("In addition, for each file we drill into two marker genes (Dbh,\n")
+  cat("Th) and confirm that their per-cell expression values are\n")
+  cat("identical to the reference, not just that the dimensions and\n")
+  cat("gene names line up. This guards against the duplicate-gene\n")
+  cat("cleanup silently keeping the wrong copy of a gene row.\n\n")
+}
+
+check_gene_values <- function(new_obj, ref_obj, gene_name) {
+  cat("    ", gene_name, ":\n", sep = "")
+
+  new_count <- sum(rownames(new_obj) == gene_name)
+  ref_count <- sum(rownames(ref_obj) == gene_name)
+  cat("      row occurrences:    new=", new_count, "  ref=", ref_count, "\n", sep = "")
+
+  if (new_count == 0 || ref_count == 0) {
+    cat("      (gene missing from one or both files -- skipping value check)\n")
+    return(invisible(NULL))
+  }
+  if (new_count > 1 || ref_count > 1) {
+    cat("      (gene appears more than once -- pre-dedup file -- skipping value check)\n")
+    return(invisible(NULL))
+  }
+
+  new_vec <- as.numeric(assay(new_obj, "counts")[gene_name, ])
+  ref_vec <- as.numeric(assay(ref_obj, "counts")[gene_name, ])
+
+  cat("      values identical:   ", identical(new_vec, ref_vec), "\n", sep = "")
+  cat("      total counts:       new=", format_count(sum(new_vec)),
+      "  ref=", format_count(sum(ref_vec)), "\n", sep = "")
+  cat("      max value:          new=", max(new_vec),
+      "  ref=", max(ref_vec), "\n", sep = "")
+  cat("      cells with count>0: new=", format_count(sum(new_vec > 0)),
+      "  ref=", format_count(sum(ref_vec > 0)), "\n", sep = "")
 }
 
 format_count <- function(n) format(n, big.mark = ",")
@@ -100,6 +133,11 @@ compare_rds <- function(new_path, ref_path) {
   }
   cat("    ", pkg_tag, "  ", format("package version stamp", width = 30),
       "  ", pkg_detail, "\n", sep = "")
+
+  cat("\n  Gene-level value checks (Dbh, Th):\n")
+  for (gene in c("Dbh", "Th")) {
+    check_gene_values(new_obj, ref_obj, gene)
+  }
 
   if (!data_ok) {
     cat("\n  -- DRILL-DOWN (data-level mismatch detected) --\n")
