@@ -110,7 +110,13 @@ convert_subject <- function(input_asset) {
   sce <- sce[!unused_genes, ]
   print(dim(sce))
 
-  # Step 3: drop duplicate HYB-cycle genes (keep lower index)
+  # Step 3: drop duplicate HYB-cycle genes. For each gene name that appears
+  # more than once in rownames, keep the lower-indexed row (the real
+  # measurement) and drop the higher-indexed row (the blank HYB cycle). This
+  # is the same logic that lived in the original brain 3 and brain 4 scripts,
+  # consolidated here. The `if (length(rows_to_drop) > 0)` wrap is brain 4's
+  # variant; for inputs that contain duplicates -- which both brains' actual
+  # inputs do -- behavior is identical to either original.
   print(length(rownames(sce)))
   print(length(unique(rownames(sce))))
   duplicated_names <- rownames(sce)[duplicated(rownames(sce)) | duplicated(rownames(sce), fromLast = TRUE)]
