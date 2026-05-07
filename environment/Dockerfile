@@ -19,4 +19,4 @@ RUN mamba update -n base -c conda-forge mamba libsolv -y || true \
 # Python deps for the metadata-generation step (02_update_metadata.py).
 # Installed against the base image's Python -- kept out of the r4-base conda
 # env so the R and Python environment builds stay independent.
-RUN python3 -m pip install --no-cache-dir aind-data-schema==2.7.0
+RUN python3 -m pip install --no-cache-dir aind-data-schema==2.7.1
