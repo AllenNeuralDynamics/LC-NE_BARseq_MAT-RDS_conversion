@@ -1,7 +1,6 @@
-# Top-level conda dependencies for the BARseq MAT-to-RDS conversion.
-# Pinned to the versions that resolved at last successful build (captured via
-# `mamba env export -n r4-base --no-builds`). Transitive deps are not pinned
-# explicitly -- conda will pick versions compatible with the pinned top-level.
+# Conda environment for the BARseq MAT-to-RDS conversion. Lists the R
+# packages used by the capsule's scripts; transitive deps resolve
+# automatically.
 name: r4-base
 channels:
   - conda-forge
@@ -13,24 +12,3 @@ dependencies:
   - r-matrix=1.6_5
   - bioconductor-singlecellexperiment=1.20.0
   - bioconductor-summarizedexperiment=1.28.0
-  - bioconductor-metaneighbor=1.18.0
-  - r-locfit=1.5_9.9
-  - r-sctransform=0.4.1
-  - r-seurat=5.1.0
-  - r-seuratobject=5.0.2
-  - r-clustree=0.5.1
-  - r-reticulate=1.38.0
-  - r-ape=5.8
-  - r-umap=0.2.10.0
-  - r-patchwork=1.2.0
-  - r-ggplot2=3.5.1
-  - r-cowplot=1.1.3
-  - r-dplyr=1.1.4
-  - r-rcolorbrewer=1.1_3
-  - r-readxl=1.4.3
-  - r-plotly=4.10.4
-  - r-gplots=3.1.3.1
-  - r-gridextra=2.3
-  - r-data.table=1.15.4
-  - r-irkernel=1.3.2
-  - r-devtools=2.4.5
