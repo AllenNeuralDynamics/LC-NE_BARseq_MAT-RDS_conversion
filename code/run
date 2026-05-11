@@ -17,13 +17,18 @@ render_html() {
   "
 }
 
-# Step 1a: Convert Brain 1 .mat to .rds
-render_html 01_BarSeq_RDSconvert_brain1_v2.R
-
-# Step 1b: Convert Brain 3 .mat to .rds
+# Step 1a: Convert Brain 3 .mat to .rds
 render_html 01_BarSeq_RDSconvert_brain3_v2.R
 
-# Step 1c: Convert Brain 4 .mat to .rds
+# Step 1b: Convert Brain 4 .mat to .rds
 render_html 01_BarSeq_RDSconvert_brain4_v2.R
+
+# Step 2: Generate AIND-compliant derived-asset metadata for each output folder.
+python3 02_update_metadata.py
+
+# TEMPORARY -- validate output against the previously-published reference asset.
+# Remove this step (and the reference asset attachment) before final release.
+# Plain text output (not HTML) since this is an ephemeral diagnostic.
+Rscript TEMP_validate_against_reference.R > /results/TEMP_validate_against_reference.txt 2>&1 || true
 
 echo "=== Reproducible Run complete. HTML reports and results saved to /results/ ==="
