@@ -1,13 +1,16 @@
-FROM registry.codeocean.allenneuraldynamics.org/codeocean/c2-seurat:latest
+ARG REGISTRY_HOST
+FROM $REGISTRY_HOST/codeocean/c2-seurat:latest
+
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_ASKPASS
-ARG GIT_ACCESS_TOKEN
 COPY git-ask-pass /
-COPY r4-base.yml /etc/mamba-envs/r4-base.yml
-COPY postInstall /
-RUN /postInstall
 
-# Python deps for the metadata-generation step (03_update_metadata.py).
-# Installed against the base image's Python -- kept out of the r4-base conda
-# env so the R and Python solver concerns stay independent.
-RUN python3 -m pip install --no-cache-dir aind-data-schema==2.6.0
+COPY r4-base.yml /tmp/r4-base.yml
+
+RUN mamba update -n base -c conda-forge mamba libsolv -y || true \
+ && rm -rf /opt/conda/envs/* /etc/mamba-envs/* \
+ && mamba env create -f /tmp/r4-base.yml \
+ && rm /tmp/r4-base.yml \
+ && ldconfig
+
+RUN python3 -m pip install --no-cache-dir aind-data-schema==2.7.1
